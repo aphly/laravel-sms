@@ -13,7 +13,7 @@ class Sms extends Model
     protected $primaryKey = 'phone';
     public $timestamps = false;
 
-    static public function check($request,$return=false){
+    public function check($request,$return=false){
         $get = $request->only(['phone','smscode']);
         if(isset($get['phone']) && isset($get['smscode'])){
             $info = self::find($get['phone']);

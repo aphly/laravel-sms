@@ -20,10 +20,10 @@ class SmsServiceProvider extends ServiceProvider
     {
         $this->app->singleton(SmsContracts::class,function (){
             $sms = config('sms');
-            if($sms['driver']=='ali'){
-                return new Ali;
+            if($sms['driver']=='qcloud'){
+				return new Qcloud;
             }else{
-                return new T;
+                return new Aliyun;
             }
         });
 		$this->mergeConfigFrom(

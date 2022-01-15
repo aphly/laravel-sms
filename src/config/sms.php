@@ -1,6 +1,7 @@
 <?php
 return [
-    'driver'=>'t',
+    'driver'=>'aliyun',
+    'iplimit'=>20,
     'aliyun' => [
         'sms_name' => '阿里云',
         'sms_url' => 'https://dysms.console.aliyun.com/dysms.htm',
