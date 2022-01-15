@@ -1,0 +1,31 @@
+{
+    "name": "aphly/laravel-sms",
+    "description": "sms for laravel",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Aphly\\LaravelSms\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Aphly",
+            "email": "121099327@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.0",
+        "aphly/laravel": ">=1.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+		        "Aphly\\LaravelSms\\SmsServiceProvider"
+            ],
+            "aliases": {
+		        "Sms": "Aphly\\LaravelSms\\Facades\\Sms"
+            }
+        }
+    }
+}
