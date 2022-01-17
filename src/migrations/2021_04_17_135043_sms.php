@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class Sms extends Migration
@@ -19,8 +20,8 @@ class Sms extends Migration
             $table->timestamp('expiretime')->nullable();
             $table->integer('total')->unsigned();
             $table->integer('times')->unsigned();
-            $table->timestamp('lasttime')->nullable()->index();
-            $table->timestamp('createtime')->nullable();
+            $table->bigInteger('lasttime')->unsigned();
+            $table->timestamp('createtime')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 

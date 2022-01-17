@@ -3,8 +3,8 @@
 namespace Aphly\LaravelSms;
 
 use Aphly\LaravelSms\Contracts\SmsContracts;
-use Aphly\LaravelSms\Drivers\Ali;
-use Aphly\LaravelSms\Drivers\T;
+use Aphly\LaravelSms\Drivers\Aliyun;
+use Aphly\LaravelSms\Drivers\Qcloud;
 use Illuminate\Support\ServiceProvider;
 
 class SmsServiceProvider extends ServiceProvider

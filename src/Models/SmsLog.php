@@ -3,6 +3,7 @@
 namespace Aphly\LaravelSms\Models;
 
 use Aphly\Laravel\Exceptions\ApiException;
+use Aphly\Laravel\Libs\Helper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,10 +14,12 @@ class SmsLog extends Model
     protected $primaryKey = 'ip';
     public $timestamps = false;
 
-    public function iplimit($ip){
+    public function ipLimit(){
+        $time = time();
+        $ip = request()->getClientIp();
         $info =  self::find($ip);
         if($info){
-            if(Common::is_today($info->todaytime)){
+            if(Helper::is_today($info->lasttime)){
                 if($info['times']<config('sms.iplimit')){
                     $info->times=$info->times+1;
                 }else{
@@ -24,18 +27,16 @@ class SmsLog extends Model
                 }
             }else{
                 $info->times=1;
-                $info->todaytime = TIMESTAMP;
+                $info->lasttime = $time;
             }
         }else{
-            $this->ip=$ip;
-            $this->times=1;
-            $this->todaytime = TIMESTAMP;
-            $this->createtime = TIMESTAMP;
+            $info = new self;
+            $info->ip=$ip;
+            $info->times=1;
+            $info->lasttime = $time;
+            $info->createtime = $time;
         }
-        if($this->save()){
-            return true;
-        }else{
-            throw new ApiException(['code'=>1010,'msg'=>'错误']);
-        }
+        return $info->save();
     }
+
 }

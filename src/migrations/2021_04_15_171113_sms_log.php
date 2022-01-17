@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class SmsLog extends Migration
@@ -17,8 +18,8 @@ class SmsLog extends Migration
         Schema::create('sms_log', function (Blueprint $table) {
             $table->string('ip',64)->primary();
             $table->integer('times')->unsigned();
-            $table->timestamp('lasttime')->nullable()->index();
-            $table->timestamp('createtime')->nullable();
+            $table->bigInteger('lasttime')->unsigned();
+            $table->timestamp('createtime')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
 

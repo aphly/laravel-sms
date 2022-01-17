@@ -4,9 +4,13 @@ namespace Aphly\LaravelSms\Drivers;
 
 use Aphly\LaravelSms\Contracts\SmsContracts;
 
-class T implements SmsContracts
+class Qcloud implements SmsContracts
 {
-    function send($mobile){
-        return $mobile.'T_vvvv';
+    function send($phone){
+
+    }
+
+    function sendCode($mobile,$smscode){
+        return $mobile;
     }
 }
