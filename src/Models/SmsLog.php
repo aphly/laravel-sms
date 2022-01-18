@@ -23,7 +23,7 @@ class SmsLog extends Model
                 if($info['times']<config('sms.iplimit')){
                     $info->times=$info->times+1;
                 }else{
-                    throw new ApiException(['code'=>1011,'msg'=>'每天同IP限制'.config('sms.iplimit').'条']);
+                    throw new ApiException(['code'=>10001,'msg'=>'每天同IP限制'.config('sms.iplimit').'条']);
                 }
             }else{
                 $info->times=1;

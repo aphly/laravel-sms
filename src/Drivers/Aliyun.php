@@ -3,7 +3,6 @@
 namespace Aphly\LaravelSms\Drivers;
 
 use Aphly\Laravel\Exceptions\ApiException;
-use Aphly\Laravel\Libs\Helper;
 use Aphly\LaravelSms\Contracts\SmsContracts;
 use AlibabaCloud\SDK\Dysmsapi\V20170525\Dysmsapi;
 use Aphly\LaravelSms\Models\Sms;
@@ -13,20 +12,18 @@ use AlibabaCloud\SDK\Dysmsapi\V20170525\Models\SendSmsRequest;
 
 class Aliyun implements SmsContracts
 {
-    function send($phone){
-
-    }
+    function send($phone){}
 
     function sendCode($phone,$smscode){
-        if(!empty($phone) && Helper::is_phone($phone) && !empty($smscode)){
-            (new SmsLog)->ipLimit();
-            (new Sms)->phoneLimit($phone,$smscode);
-            $arr = ['phone'=>$phone,'code'=>$smscode];
-            //self::main($arr);
-            throw new ApiException(['code'=>1002,'data'=>$arr,'msg'=>'发送成功']);
-        }else{
-            throw new ApiException(['code'=>1004,'data'=>'','msg'=>'手机号格式错误']);
-        }
+        (new SmsLog)->ipLimit();
+        (new Sms)->phoneLimit($phone,$smscode);
+        $arr = ['phone'=>$phone,'code'=>$smscode];
+        self::main($arr);
+        throw new ApiException(['code'=>10003,'data'=>$arr,'msg'=>'发送成功']);
+    }
+
+    public function check($phone,$smscode){
+        (new Sms)->check($phone,$smscode);
     }
 
     public static function createClient($accessKeyId, $accessKeySecret){

@@ -15,7 +15,7 @@ class Sms extends Migration
     public function up()
     {
         Schema::create('sms', function (Blueprint $table) {
-            $table->string('phone',20)->primary();
+            $table->char('phone',16)->primary();
             $table->string('smscode',10);
             $table->integer('expiretime')->unsigned();
             $table->integer('total')->unsigned();

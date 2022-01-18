@@ -12,11 +12,10 @@ class SmsLog extends Migration
      *
      * @return void
      */
-
     public function up()
     {
         Schema::create('sms_log', function (Blueprint $table) {
-            $table->string('ip',64)->primary();
+            $table->char('ip',64)->primary();
             $table->integer('times')->unsigned();
             $table->integer('lasttime')->unsigned();
             $table->timestamp('createtime')->default(DB::raw('CURRENT_TIMESTAMP'));
