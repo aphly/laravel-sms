@@ -35,7 +35,6 @@ class Sms extends Model
             $info->total=1;
             $info->times=1;
             $info->lasttime = $time;
-            $info->createtime = $time;
         }
         $info->smscode=$smscode;
         $info->expiretime= $time+config('sms.expiretime')*60;

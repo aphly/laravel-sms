@@ -34,7 +34,6 @@ class SmsLog extends Model
             $info->ip=$ip;
             $info->times=1;
             $info->lasttime = $time;
-            $info->createtime = $time;
         }
         return $info->save();
     }

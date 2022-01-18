@@ -17,10 +17,10 @@ class Sms extends Migration
         Schema::create('sms', function (Blueprint $table) {
             $table->string('phone',20)->primary();
             $table->string('smscode',10);
-            $table->timestamp('expiretime')->nullable();
+            $table->integer('expiretime')->unsigned();
             $table->integer('total')->unsigned();
             $table->integer('times')->unsigned();
-            $table->bigInteger('lasttime')->unsigned();
+            $table->integer('lasttime')->unsigned();
             $table->timestamp('createtime')->default(DB::raw('CURRENT_TIMESTAMP'));
         });
     }
