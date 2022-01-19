@@ -4,8 +4,13 @@ namespace Aphly\LaravelSms\Models;
 
 use Aphly\Laravel\Exceptions\ApiException;
 use Aphly\Laravel\Libs\Helper;
+use Aphly\LaravelSms\Jobs\SendJob;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
+use AlibabaCloud\SDK\Dysmsapi\V20170525\Dysmsapi;
+use Darabonba\OpenApi\Models\Config;
+use AlibabaCloud\SDK\Dysmsapi\V20170525\Models\SendSmsRequest;
 
 class Sms extends Model
 {
@@ -44,7 +49,7 @@ class Sms extends Model
 
     static public function _check($phone,$smscode){
         if(empty($phone) || !Helper::is_phone($phone) || empty($smscode)){
-            throw new ApiException(['code'=>10004,'data'=>'','msg'=>'手机号格式错误']);
+            throw new ApiException(['code'=>10003,'data'=>'','msg'=>'手机号格式错误']);
         }
     }
 
@@ -64,5 +69,33 @@ class Sms extends Model
         }else{
             throw new ApiException(['code'=>10014,'msg'=>'无效手机号']);
         }
+    }
+
+    public function send($phone,$smscode){
+        if(config('sms.queue')){
+            SendJob::dispatch(['phone'=>$phone,'smscode'=>$smscode]);
+        }else{
+            SendJob::dispatchSync(['phone'=>$phone,'smscode'=>$smscode]);
+        }
+    }
+
+    public static function createClient($accessKeyId, $accessKeySecret){
+        $config = new Config([
+            "accessKeyId" => $accessKeyId,
+            "accessKeySecret" => $accessKeySecret
+        ]);
+        $config->endpoint = "dysmsapi.aliyuncs.com";
+        return new Dysmsapi($config);
+    }
+
+    public static function main($args){
+        $client = self::createClient(config('sms.aliyun.accessKeyId'), config('sms.aliyun.accessKeySecret'));
+        $sendSmsRequest = new SendSmsRequest([
+            "phoneNumbers" => $args['phone'],
+            "signName" => config('sms.aliyun.signName'),
+            "templateCode" => config('sms.templates.aliyun.verify_code'),
+            "templateParam" => '{"code":"'.$args['$smscode'].'"}',
+        ]);
+        $client->sendSms($sendSmsRequest);
     }
 }

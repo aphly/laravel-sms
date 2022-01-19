@@ -7,9 +7,6 @@ use Aphly\LaravelSms\Models\Sms;
 
 class Qcloud implements SmsContracts
 {
-    function send($phone){
-
-    }
 
     function sendCode($mobile,$smscode){
         return $mobile;
