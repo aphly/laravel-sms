@@ -1,7 +1,10 @@
 **laravel sms短信**<br>
+1、采用阿里云最新短信接口<br>
+2、后续增加腾讯云短信<br>
 
 环境<br>
 php7.0+<br>
+laravel8+<br>
 
 安装<br>
 `composer require aphly/laravel-sms` <br>
@@ -9,7 +12,7 @@ php7.0+<br>
 `php artisan migrate` <br>
 
 配置文件<br>
-config/sms.php
+config/sms.php<br>
 
 
 1、发送短信<br>

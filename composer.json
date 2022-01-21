@@ -22,7 +22,7 @@
     "extra": {
         "laravel": {
             "providers": [
-		        "Aphly\\LaravelSms\\SmsServiceProvider"
+              "AdminServiceProvider"
             ],
             "aliases": {
 		        "Sms": "Aphly\\LaravelSms\\Facades\\Sms"
