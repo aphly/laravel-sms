@@ -2,10 +2,9 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class SmsLog extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +13,11 @@ class SmsLog extends Migration
      */
     public function up()
     {
-        Schema::create('sms_log', function (Blueprint $table) {
+        Schema::create('sms_ip_log', function (Blueprint $table) {
             $table->char('ip',64)->primary();
-            $table->integer('times')->unsigned();
-            $table->integer('lasttime')->unsigned();
-            $table->timestamp('createtime')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->unsignedBigInteger('times');
+            $table->unsignedBigInteger('created_at');
+            $table->unsignedBigInteger('updated_at');
         });
     }
 
@@ -29,6 +28,6 @@ class SmsLog extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sms_log');
+        Schema::dropIfExists('sms_ip_log');
     }
-}
+};

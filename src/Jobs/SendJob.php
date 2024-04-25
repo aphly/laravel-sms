@@ -9,12 +9,11 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-
 class SendJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 2;
+    //public $tries = 2;
     /**
      * Create a new job instance.
      *
@@ -33,7 +32,7 @@ class SendJob implements ShouldQueue
      */
     public function handle()
     {
-        (new Sms)->main($this->arr);
+        Sms::main($this->arr);
     }
 
 

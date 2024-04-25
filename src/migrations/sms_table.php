@@ -2,10 +2,9 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class Sms extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -15,13 +14,13 @@ class Sms extends Migration
     public function up()
     {
         Schema::create('sms', function (Blueprint $table) {
-            $table->char('phone',16)->primary();
-            $table->string('smscode',10);
-            $table->integer('expiretime')->unsigned();
-            $table->integer('total')->unsigned();
-            $table->integer('times')->unsigned();
-            $table->integer('lasttime')->unsigned();
-            $table->timestamp('createtime')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->id();
+            $table->unsignedBigInteger('site_id')->index();
+            $table->unsignedBigInteger('phone')->index();
+            $table->string('sms_code',10);
+            $table->unsignedBigInteger('expire_at');
+            $table->text('res')->nullable();
+            $table->unsignedBigInteger('created_at');
         });
     }
 
@@ -34,4 +33,4 @@ class Sms extends Migration
     {
         Schema::dropIfExists('sms');
     }
-}
+};
