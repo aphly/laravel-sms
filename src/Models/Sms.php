@@ -12,18 +12,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use AlibabaCloud\SDK\Dysmsapi\V20170525\Dysmsapi;
 use Darabonba\OpenApi\Models\Config;
 use AlibabaCloud\SDK\Dysmsapi\V20170525\Models\SendSmsRequest;
+use Illuminate\Support\Facades\Cache;
 
 class Sms extends Model
 {
     use HasFactory;
     protected $table = 'sms';
-    public $timestamps = false;
+    //public $timestamps = false;
 
     protected $fillable = [
-        'phone','site_id','sms_code','expire_at','created_at','res'
+        'phone','site_id','sms_code','expire_at','created_at','res','type','queue_priority','status'
     ];
-
-
 
     static public function _check(){
         return Verifier::handle(request()->all(),[
@@ -37,17 +36,11 @@ class Sms extends Model
         ]);
     }
 
-    static public function check(){
-        $arr = self::_check();
-        $info = Sms::where('phone',$arr['phone'])->orderBy('created_at','desc')->firstOrError();
-        if($info->sms_code==$arr['sms_code']){
-            if($info->expire_at>time()){
-                throw new ApiException(['code'=>0,'msg'=>'验证通过']);
-            }else{
-                throw new ApiException(['code'=>2,'msg'=>'验证码过期']);
-            }
-        }else{
-            throw new ApiException(['code'=>1,'msg'=>'无效验证码']);
+    static public function clearOverDays(int $day=2){
+        $sms_clear = Cache::get('clearOver2Day');
+        if(!$sms_clear){
+            Cache::set('clearOver2Day',1);
+            self::where('created_at','<',time()-3600*24*$day)->delete();
         }
     }
 
@@ -59,7 +52,7 @@ class Sms extends Model
         }
     }
 
-    public static function main($args,$err=false){
+    public static function main($args,$throw=false){
         $client = self::createClient($args['key_id'], $args['key_secret']);
         $sendSmsRequest = new SendSmsRequest([
             "phoneNumbers" => $args['phone'],
@@ -71,20 +64,20 @@ class Sms extends Model
             $res = $client->sendSmsWithOptions($sendSmsRequest, new RuntimeOptions([]));
         }catch (\Exception $error) {
             $res_str = $error->getMessage();
-            Sms::where('id',$args['id'])->update(['res'=>$res_str]);
-            if($err){
+            if($throw){
                 throw new ApiException(['code'=>2,'msg'=> $res_str]);
-            }
-            return;
-        }
-        $res_body = $res->body;
-        Sms::where('id',$args['id'])->update(['res'=>json_encode($res_body)]);
-        if($err) {
-            if($res->body->code=='ok'){
-                throw new ApiException(['code' => 0, 'msg' => $res->body->message, 'data' => $res_body]);
             }else{
-                throw new ApiException(['code'=>1,'msg'=>$res->body->message,'data'=>$res_body]);
+                return Sms::where('id',$args['id'])->update(['res'=>$res_str,'status'=>1]);
             }
+        }
+        if($throw) {
+            if($res->body->code=='ok'){
+                throw new ApiException(['code' => 0, 'msg' => $res->body->message, 'data' => $res->body]);
+            }else{
+                throw new ApiException(['code'=>1,'msg'=>$res->body->message,'data'=>$res->body]);
+            }
+        }else{
+            return Sms::where('id',$args['id'])->update(['res'=>json_encode($res->body),'status'=>1]);
         }
     }
 

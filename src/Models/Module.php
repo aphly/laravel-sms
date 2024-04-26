@@ -18,10 +18,10 @@ class Module extends Module_base
         $menu = Menu::create(['name' => 'SMS','route' =>'','pid'=>0,'uuid'=>$manager->uuid,'type'=>1,'module_id'=>$module_id,'sort'=>10]);
         if($menu->id){
             $data=[];
-            $data[] =['name' => 'SMS测试','route' =>'sms_admin/sms/test','pid'=>$menu->id,'uuid'=>$manager->uuid,'type'=>2,'module_id'=>$module_id,'sort'=>0];
-            $data[] =['name' => '站点管理','route' =>'sms_admin/site/index','pid'=>$menu->id,'uuid'=>$manager->uuid,'type'=>2,'module_id'=>$module_id,'sort'=>0];
-            $data[] =['name' => '通道管理','route' =>'sms_admin/driver/index','pid'=>$menu->id,'uuid'=>$manager->uuid,'type'=>2,'module_id'=>$module_id,'sort'=>0];
-            $data[] =['name' => '模板管理','route' =>'sms_admin/template/index','pid'=>$menu->id,'uuid'=>$manager->uuid,'type'=>2,'module_id'=>$module_id,'sort'=>0];
+            $data[] =['name' => '通道管理','route' =>'sms_admin/driver/index','pid'=>$menu->id,'uuid'=>$manager->uuid,'type'=>2,'module_id'=>$module_id,'sort'=>9];
+            $data[] =['name' => '模板管理','route' =>'sms_admin/template/index','pid'=>$menu->id,'uuid'=>$manager->uuid,'type'=>2,'module_id'=>$module_id,'sort'=>8];
+            $data[] =['name' => '通道测试','route' =>'sms_admin/sms/driver','pid'=>$menu->id,'uuid'=>$manager->uuid,'type'=>2,'module_id'=>$module_id,'sort'=>7];
+            $data[] =['name' => '站点管理','route' =>'sms_admin/site/index','pid'=>$menu->id,'uuid'=>$manager->uuid,'type'=>2,'module_id'=>$module_id,'sort'=>6];
             DB::table('admin_menu')->insert($data);
         }
         $menuData = Menu::where(['module_id'=>$module_id])->get();

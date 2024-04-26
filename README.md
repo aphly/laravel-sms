@@ -12,31 +12,53 @@ laravel10+<br>
 `composer require aphly/laravel-sms` <br>
 `php artisan vendor:publish --provider="Aphly\LaravelSms\SmsServiceProvider"` <br>
 
+队列<br>
+`php artisan queue:work --queue=sms_vip,sms`
+
 1、发送短信<br>
 `post /sms/send`<br>
 10001 每天同IP限制条数<br>
 10002 每天同手机号限制条数<br>
 11000 手机号或验证码错误<br>
-`$phone = '111111111';
-$sms_code = '4444';
-$app_key = 'VRvs2ZdNTAXlf67lqpb49ueCDIspMpMA';
-$input = [
-'phone'=>$phone,
-'sms_code'=>$sms_code,
-'app_id'=>'2024042523241507',
-'timestamp'=>time()
-];
-$input['sign'] = sign($input,$app_key);
-$response = Http::post('http://xx/sms/send',$input);
-dd($response->body());`
-
-`sign : md5(md5($input['app_id'].$input['phone'].$input['sms_code'].$app_key).$input['timestamp'])`
 
 2、验证短信<br>
-`get /sms/check`<br>
+`post /sms/check`<br>
 0 验证通过<br>
 2 验证码过期<br>
 1 无效验证码<br>
 11000 无效手机号<br>
-`$response = Http::get('http://xx/sms/check?phone=111111111&sms_code=1111');
-dd($response->body());`
+
+示例<br>
+`function sign($input,$app_key){
+return md5(md5($input['app_id'].$input['phone'].$input['sms_code'].$app_key).$input['timestamp']);
+}
+
+Route::get('/sms/send', function () {
+$phone = '1111';
+$sms_code = '66666';
+$app_key = 'yBgx0Vk8kTIRoRo3PgTRL9fFNIrmADTt';
+$input = [
+'phone'=>$phone,
+'sms_code'=>$sms_code,
+'app_id'=>'2024042695714480',
+'timestamp'=>time()
+];
+$input['sign'] = sign($input,$app_key);
+$response = Http::post('http://xx/sms/send',$input);
+dd($response->body());
+});
+
+Route::get('/sms/check', function () {
+$phone = '11111';
+$sms_code = '66666';
+$app_key = 'yBgx0Vk8kTIRoRo3PgTRL9fFNIrmADTt';
+$input = [
+'phone'=>$phone,
+'sms_code'=>$sms_code,
+'app_id'=>'2024042695714480',
+'timestamp'=>time()
+];
+$input['sign'] = sign($input,$app_key);
+$response = Http::post('http://xx/sms/check',$input);
+dd($response->body());
+});`

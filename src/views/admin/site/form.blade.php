@@ -48,17 +48,6 @@
                 <div class="invalid-feedback"></div>
             </div>
             <div class="form-group">
-                <label for="">queue_priority</label>
-                <select name="queue_priority" class="form-control">
-                    @if(isset($dict['sms_queue_priority']))
-                        @foreach($dict['sms_queue_priority'] as $key=>$val)
-                            <option value="{{$key}}" @if($res['info']->queue_priority==$key) selected @endif>{{$val}}</option>
-                        @endforeach
-                    @endif
-                </select>
-                <div class="invalid-feedback"></div>
-            </div>
-            <div class="form-group">
                 <label for="">每天同手机号限制条数</label>
                 <input type="text" name="phone_limit" class="form-control " value="{{$res['info']->phone_limit?:5}}">
                 <div class="invalid-feedback"></div>

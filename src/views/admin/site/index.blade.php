@@ -45,6 +45,8 @@
                         </li>
                         <li>
                             <a class="badge badge-info ajax_html" data-href="/sms_admin/site/form?id={{$v['id']}}">编辑</a>
+                            <a class="badge badge-info ajax_html" data-href="/sms_admin/sms/test?site_id={{$v['id']}}">测试</a>
+                            <a class="badge badge-info ajax_html" data-href="/sms_admin/sms/index?site_id={{$v['id']}}">短信记录</a>
                         </li>
                     </ul>
                     @endforeach

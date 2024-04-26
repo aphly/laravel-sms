@@ -19,8 +19,12 @@ return new class extends Migration
             $table->unsignedBigInteger('phone')->index();
             $table->string('sms_code',10);
             $table->unsignedBigInteger('expire_at');
+            $table->tinyInteger('type')->default(0);
+            $table->tinyInteger('queue_priority')->default(0);
+            $table->tinyInteger('status')->default(0);
             $table->text('res')->nullable();
             $table->unsignedBigInteger('created_at');
+            $table->unsignedBigInteger('updated_at');
         });
     }
 

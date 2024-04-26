@@ -19,10 +19,20 @@ class SendJob implements ShouldQueue
      *
      * @return void
      */
+    public $timeout = 30;
+
     private $arr;
+
+    //php artisan queue:work --queue=sms_vip,sms
+
     public function __construct($arr)
     {
         $this->arr = $arr;
+        if(isset($arr['queue_priority']) && $arr['queue_priority']==1){
+            $this->onQueue('sms_vip');
+        }else{
+            $this->onQueue('sms');
+        }
     }
 
     /**

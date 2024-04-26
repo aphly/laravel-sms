@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::middleware(['limit'])->group(function () {
     Route::match(['post'],'sms/send', 'Aphly\LaravelSms\Controllers\Front\SmsController@send');
-    Route::match(['get'],'sms/check', 'Aphly\LaravelSms\Controllers\Front\SmsController@check');
+    Route::match(['post'],'sms/check', 'Aphly\LaravelSms\Controllers\Front\SmsController@check');
 });
 
 Route::middleware(['web'])->group(function () {
@@ -36,8 +36,8 @@ Route::middleware(['web'])->group(function () {
                 Route::post($val[0].'/save', 'Aphly\LaravelSms\Controllers\Admin'.$val[1].'@save');
                 Route::post($val[0].'/del', 'Aphly\LaravelSms\Controllers\Admin'.$val[1].'@del');
             }
-            Route::match(['get','post'],'sms/test_aliyun', 'Aphly\LaravelSms\Controllers\Admin\SmsController@testAliyun');
-            Route::match(['get','post'],'sms/test_local', 'Aphly\LaravelSms\Controllers\Admin\SmsController@testLocal');
+            Route::match(['get','post'],'sms/driver', 'Aphly\LaravelSms\Controllers\Admin\SmsController@driver');
+            Route::match(['get','post'],'sms/test', 'Aphly\LaravelSms\Controllers\Admin\SmsController@test');
         });
     });
 

@@ -7,8 +7,8 @@
     <div class="">
         <div>
             <ul class="email">
-                <li><span>email</span><span>{{$res['info']->email}}</span></li>
-                <li><span>site_id</span><span>{{$res['emailSite']->host}}</span></li>
+                <li><span>手机号码</span><span>{{$res['info']->phone}}</span></li>
+                <li><span>site_id</span><span>{{$res['smsSite']->host}}</span></li>
                 <li><span>type</span><span>
                         @if($dict['email_type'])
                             {{$dict['email_type'][$res['info']->type]}}

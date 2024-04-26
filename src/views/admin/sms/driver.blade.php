@@ -3,7 +3,7 @@
     <h5 class="nav-title">{!! $res['breadcrumb'] !!}</h5>
 </div>
 <div class="imain">
-    <form method="post" action="/sms_admin/sms/test_aliyun" class="save_form">
+    <form method="post" action="/sms_admin/sms/driver" class="save_form">
         @csrf
         <div class="">
             <div class="form-group">
@@ -20,7 +20,11 @@
                 <label for="">签名 - 模板Code</label>
                 <select name="template_id"  class="form-control">
                     @foreach($res['template'] as $key=>$val)
-                        <option value="{{$val->id}}" >{{$val->sign_name}} - {{$val->template_code}}</option>
+                        <optgroup label="{{$res['driver'][$key]['name']}}">
+                            @foreach($val as $k=>$v)
+                                <option value="{{$v->id}}" >{{$v->sign_name}} - {{$v->template_code}}</option>
+                            @endforeach
+                        </optgroup>
                     @endforeach
                 </select>
                 <div class="invalid-feedback"></div>

@@ -11,7 +11,7 @@ class SmsSite extends Model
     protected $table = 'sms_site';
     //public $timestamps = false;
     protected $fillable = [
-        'app_id','app_key','host','status','template_id','type','queue_priority','ip_limit','phone_limit','expire'
+        'app_id','app_key','host','status','template_id','type','ip_limit','phone_limit','expire'
     ];
 
     function template()

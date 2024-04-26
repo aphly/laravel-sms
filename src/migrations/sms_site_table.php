@@ -19,8 +19,7 @@ return new class extends Migration
             $table->string('app_key',64)->nullable();
             $table->string('host',64)->index();
             $table->unsignedBigInteger('template_id')->index();
-            $table->tinyInteger('type')->default(1);
-            $table->tinyInteger('queue_priority')->default(0);
+            $table->tinyInteger('type')->default(0);
             $table->unsignedTinyInteger('ip_limit')->default(20);
             $table->unsignedTinyInteger('phone_limit')->default(10);
             $table->unsignedTinyInteger('expire')->default(2);
