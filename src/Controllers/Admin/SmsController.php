@@ -44,7 +44,7 @@ class SmsController extends Controller
     public function detail(Request $request)
     {
         $res['smsSite'] = SmsSite::where('id',$request->query('site_id',0))->firstOrError();
-        $res['info'] = Sms::where('id',$request->query('id',0))->firstOrNew();
+        $res['info'] = Sms::where('id',$request->query('id',0))->firstOrError();
         $res['breadcrumb'] = Breadcrumb::render([
             ['name'=>$this->currArr['name'].'管理','href'=>$this->p_url],
             ['name'=>$res['smsSite']->host,'href'=>$this->index_url.'?site_id='.$res['smsSite']->id],

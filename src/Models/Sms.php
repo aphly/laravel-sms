@@ -21,7 +21,7 @@ class Sms extends Model
     //public $timestamps = false;
 
     protected $fillable = [
-        'phone','site_id','sms_code','expire_at','created_at','res','type','queue_priority','status'
+        'phone','site_id','sms_code','expire_at','res','type','queue_priority','status'
     ];
 
     static public function _check(){

@@ -33,7 +33,7 @@
                     @foreach($res['list'] as $v)
                     <ul class="table_tbody @if($v['viewed']==1) viewed @endif">
                         <li><input type="checkbox" class="delete_box" name="delete[]" value="{{$v['id']}}">{{$v['id']}}</li>
-                        <li class="wenzi">{{$v['sms']}}</li>
+                        <li class="wenzi">{{$v['phone']}}</li>
                         <li>
                             {{$v['sms_code']}}
                         </li>
@@ -56,7 +56,7 @@
                             @endif
                         </li>
                         <li>
-                            {{$v->created_at}} {{$v['created_at']}}
+                            {{$v->created_at}}
                         </li>
                         <li>
                             @if($dict['sms_status'])
