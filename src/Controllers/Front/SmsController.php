@@ -5,9 +5,11 @@ namespace Aphly\LaravelSms\Controllers\Front;
 use Aphly\Laravel\Exceptions\ApiException;
 use Aphly\Laravel\Libs\Verifier;
 use Aphly\LaravelSms\Models\Sms;
+use Aphly\LaravelSms\Models\SmsDriver;
 use Aphly\LaravelSms\Models\SmsIpLog;
 use Aphly\LaravelSms\Models\SmsPhoneLog;
 use Aphly\LaravelSms\Models\SmsSite;
+use Aphly\LaravelSms\Models\SmsTemplate;
 use Illuminate\Http\Request;
 
 class SmsController extends Controller
@@ -15,7 +17,7 @@ class SmsController extends Controller
     public function send(Request $request)
     {
         if($request->isMethod('post')) {
-            list($input,$smsSite) = $this->_check($request);
+            list($input,$smsSite,$smsTemplate,$smsDriver) = $this->_check($request);
             $now = time();
             $input['site_id'] = $smsSite->id;
             $input['expire_at'] = $now+$smsSite->expire*60;
@@ -26,12 +28,12 @@ class SmsController extends Controller
             if($sms->id){
                 $sms->send([
                     'id'=>$sms->id,
-                    'key_id'=>$smsSite->template->driver->key_id,
-                    'key_secret'=>$smsSite->template->driver->key_secret,
+                    'key_id'=>$smsDriver->key_id,
+                    'key_secret'=>$smsDriver->key_secret,
                     'phone'=> $sms->phone,
                     'template_param'=>'{"code":"'.$sms->sms_code.'"}',
-                    'sign_name'=>$smsSite->template->sign_name,
-                    'template_code'=>$smsSite->template->template_code,
+                    'sign_name'=>$smsTemplate->sign_name,
+                    'template_code'=>$smsTemplate->template_code,
                     'type'=>$smsSite->type,
                     'queue_priority'=>$input['queue_priority'],
                 ]);
@@ -48,35 +50,41 @@ class SmsController extends Controller
         return md5(md5($input['app_id'].$input['phone'].$input['sms_code'].$app_key).$input['timestamp']);
     }
 
-    public function _check($request)
+    public function _check($request,$is_check=false)
     {
         Sms::clearOverDays();
         $input = $request->all();
         Verifier::handle($input,[
-            'phone'=>'required',
-            'sms_code'=>'required',
+            'phone'=>'required|digits:11',
+            'sms_code'=>'required|digits_between:4,6',
             'app_id'=>'required',
             'sign'=>'required',
             'timestamp'=>'required',
         ],[
             'phone.required'=>'手机号码缺少',
+            'phone.digits'=>'手机号码格式错误',
             'sms_code.required'=>'验证码缺少',
+            'sms_code.digits_between'=>'验证码格式错误',
             'app_id.required'=>'App_id缺少',
             'sign.required'=>'签名缺少',
         ]);
-        $smsSite = SmsSite::where('app_id',$input['app_id'])->where('status',1)->with(['template'=>['driver']])->firstOrError();
-        SmsIpLog::ipLimit($smsSite->ip_limit);
-        SmsPhoneLog::phoneLimit($input['phone'],$smsSite->phone_limit);
+        $smsSite = SmsSite::where('app_id',$input['app_id'])->where('status',1)->firstOrError();
+        $smsTemplate = SmsTemplate::where('id',$smsSite->template_id)->where('status',1)->firstOrError();
+        $smsDriver = SmsDriver::where('id',$smsTemplate->driver_id)->where('status',1)->firstOrError();
+        if(!$is_check){
+            SmsIpLog::ipLimit($smsSite->ip_limit);
+            SmsPhoneLog::phoneLimit($input['phone'],$smsSite->phone_limit);
+        }
         if($this->sign($input,$smsSite->app_key)!=$input['sign']){
             throw new ApiException(['code'=>4,'msg'=>'sign error']);
         }
-        return [$input,$smsSite];
+        return [$input,$smsSite,$smsTemplate,$smsDriver];
     }
 
     public function check(Request $request)
     {
         if($request->isMethod('post')) {
-            list($arr) = $this->_check($request);
+            list($arr) = $this->_check($request,true);
             $info = Sms::where('phone',$arr['phone'])->orderBy('created_at','desc')->firstOrError();
             if($info->sms_code==$arr['sms_code']){
                 if($info->expire_at>time()){
