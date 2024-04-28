@@ -7,6 +7,7 @@ use Aphly\Laravel\Exceptions\ApiException;
 use Aphly\Laravel\Libs\Verifier;
 use Aphly\Laravel\Models\Model;
 use Aphly\LaravelSms\Jobs\SendJob;
+use Aphly\LaravelSms\Jobs\SmsJob;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use AlibabaCloud\SDK\Dysmsapi\V20170525\Dysmsapi;
@@ -36,19 +37,19 @@ class Sms extends Model
         ]);
     }
 
-    static public function clearOverDays(int $day=2){
-        $sms_clear = Cache::get('clearOver2Day');
-        if(!$sms_clear){
-            Cache::set('clearOver2Day',1);
-            self::where('created_at','<',time()-3600*24*$day)->delete();
+    static public function clearOverDays(int $days=30){
+        $clear = Cache::get('clearSmsOverDays');
+        if(!$clear){
+            Cache::set('clearSmsOverDays',1);
+            self::where('created_at','<',time()-3600*24*$days)->delete();
         }
     }
 
     public function send($args){
         if($args['type']){
-            SendJob::dispatch($args);
+            SmsJob::dispatch($args);
         }else{
-            SendJob::dispatchSync($args);
+            SmsJob::dispatchSync($args);
         }
     }
 

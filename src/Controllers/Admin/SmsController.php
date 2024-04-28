@@ -95,10 +95,8 @@ class SmsController extends Controller
         $input = $request->all();
         $res['smsSite'] = SmsSite::where('id',$input['site_id'])->with(['template'=>['driver']])->firstOrError();
         if($request->isMethod('post')) {
-            $now = time();
             $input['site_id'] = $res['smsSite']->id;
-            $input['expire_at'] = $now+$res['smsSite']->expire*60;
-            $input['created_at'] = $now;
+            $input['expire_at'] = time()+$res['smsSite']->expire*60;
             $input['type'] = $res['smsSite']->type?1:0;
             $input['queue_priority'] = ($input['queue_priority']??0)?1:0;
             $sms = Sms::create($input);
