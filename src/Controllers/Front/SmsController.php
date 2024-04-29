@@ -68,9 +68,9 @@ class SmsController extends Controller
             'app_id.required'=>'App_id缺少',
             'sign.required'=>'签名缺少',
         ]);
-        $smsSite = SmsSite::where('app_id',$input['app_id'])->where('status',1)->firstOrError();
-        $smsTemplate = SmsTemplate::where('id',$smsSite->template_id)->where('status',1)->firstOrError();
-        $smsDriver = SmsDriver::where('id',$smsTemplate->driver_id)->where('status',1)->firstOrError();
+        $smsSite = SmsSite::where('app_id',$input['app_id'])->statusOrError();
+        $smsTemplate = SmsTemplate::where('id',$smsSite->template_id)->statusOrError();
+        $smsDriver = SmsDriver::where('id',$smsTemplate->driver_id)->statusOrError();
         if(!$is_check){
             SmsIpLog::ipLimit($smsSite->ip_limit);
             SmsPhoneLog::phoneLimit($input['phone'],$smsSite->phone_limit);

@@ -40,8 +40,9 @@ class Sms extends Model
     static public function clearOverDays(int $days=30){
         $clear = Cache::get('clearSmsOverDays');
         if(!$clear){
-            Cache::set('clearSmsOverDays',1);
-            self::where('created_at','<',time()-3600*24*$days)->delete();
+            $seconds = 3600*24*$days;
+            Cache::put('clearSmsOverDays',1,$seconds);
+            self::where('created_at','<',time()-$seconds)->delete();
         }
     }
 
