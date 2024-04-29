@@ -3,6 +3,7 @@
 namespace Aphly\LaravelSms\Controllers\Admin;
 
 use Aphly\Laravel\Exceptions\ApiException;
+use Aphly\Laravel\Libs\Verifier;
 use Aphly\Laravel\Models\Breadcrumb;
 
 use Aphly\LaravelSms\Models\Sms;
@@ -68,6 +69,11 @@ class SmsController extends Controller
     {
         if($request->isMethod('post')) {
             $input = $request->all();
+            Verifier::handle($input,[
+                'template_id'=>'required',
+                'phone'=>'required',
+                'sms_code'=>'required'
+            ]);
             $arr['phone'] = $input['phone'];
             $templateInfo = SmsTemplate::where('status',1)->where('id',$input['template_id'])->with('driver')->firstOrError();
             $arr['key_id'] = $templateInfo->driver->key_id;
@@ -93,6 +99,11 @@ class SmsController extends Controller
     public function test(Request $request)
     {
         $input = $request->all();
+        Verifier::handle($input,[
+            'site_id'=>'required',
+            'phone'=>'required',
+            'sms_code'=>'required'
+        ]);
         $res['smsSite'] = SmsSite::where('id',$input['site_id'])->with(['template'=>['driver']])->firstOrError();
         if($request->isMethod('post')) {
             $input['site_id'] = $res['smsSite']->id;

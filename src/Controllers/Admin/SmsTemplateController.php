@@ -3,6 +3,7 @@
 namespace Aphly\LaravelSms\Controllers\Admin;
 
 use Aphly\Laravel\Exceptions\ApiException;
+use Aphly\Laravel\Libs\Verifier;
 use Aphly\Laravel\Models\Breadcrumb;
 
 use Aphly\LaravelSms\Models\SmsDriver;
@@ -46,6 +47,12 @@ class SmsTemplateController extends Controller
 
     public function save(Request $request){
         $input = $request->all();
+        Verifier::handle($input,[
+            'driver_id'=>'required',
+            'sign_name'=>'required',
+            'template_code'=>'required',
+            'status'=>'required'
+        ]);
         SmsTemplate::updateOrCreate(['id'=>$request->query('id',0)],$input);
         throw new ApiException(['code'=>0,'msg'=>'success','data'=>['redirect'=>$this->index_url]]);
     }

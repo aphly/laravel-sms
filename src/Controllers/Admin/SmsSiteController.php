@@ -3,6 +3,7 @@
 namespace Aphly\LaravelSms\Controllers\Admin;
 
 use Aphly\Laravel\Exceptions\ApiException;
+use Aphly\Laravel\Libs\Verifier;
 use Aphly\Laravel\Models\Breadcrumb;
 
 use Aphly\LaravelSms\Models\SmsDriver;
@@ -56,6 +57,15 @@ class SmsSiteController extends Controller
 
     public function save(Request $request){
         $input = $request->all();
+        Verifier::handle($input,[
+            'host'=>'required',
+            'template_id'=>'required',
+            'type'=>'required',
+            'ip_limit'=>'required',
+            'phone_limit'=>'required',
+            'expire'=>'required',
+            'status'=>'required'
+        ]);
         if(empty($input['app_id'])){
             $input = array_map(fn($i)=>trim($i),$input);
             $input['app_id'] = date('Ymd') . str_pad(mt_rand(1, 99999999), 8, '0', STR_PAD_LEFT);
