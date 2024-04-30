@@ -46,10 +46,6 @@ class SmsController extends Controller
         }
     }
 
-    function sign($input,$app_key){
-        return md5(md5($input['app_id'].$input['phone'].$input['sms_code'].$app_key).$input['timestamp']);
-    }
-
     public function _check($request,$is_check=false)
     {
         Sms::clearOverDays();
@@ -75,7 +71,7 @@ class SmsController extends Controller
             SmsIpLog::ipLimit($smsSite->ip_limit);
             SmsPhoneLog::phoneLimit($input['phone'],$smsSite->phone_limit);
         }
-        if($this->sign($input,$smsSite->app_key)!=$input['sign']){
+        if(\Aphly\Laravel\Libs\Sms::sign($input,$smsSite->app_key)!=$input['sign']){
             throw new ApiException(['code'=>4,'msg'=>'sign error']);
         }
         return [$input,$smsSite,$smsTemplate,$smsDriver];
