@@ -81,7 +81,7 @@ class SmsController extends Controller
     {
         if($request->isMethod('post')) {
             list($arr) = $this->_check($request,true);
-            $info = Sms::where('phone',$arr['phone'])->orderBy('created_at','desc')->firstOrError();
+            $info = Sms::where('phone',$arr['phone'])->orderBy('created_at','desc')->statusOrError();
             if($info->sms_code==$arr['sms_code']){
                 if($info->expire_at>time()){
                     throw new ApiException(['code'=>0,'msg'=>'验证通过']);
