@@ -28,6 +28,7 @@ class SmsController extends Controller
             if($sms->id){
                 $sms->send([
                     'id'=>$sms->id,
+                    'driver'=>$smsDriver,
                     'key_id'=>$smsDriver->key_id,
                     'key_secret'=>$smsDriver->key_secret,
                     'phone'=> $sms->phone,

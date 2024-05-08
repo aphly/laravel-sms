@@ -55,21 +55,30 @@ class Sms extends Model
     }
 
     public static function main($args,$throw=false){
-        $client = self::createClient($args['key_id'], $args['key_secret']);
-        $sendSmsRequest = new SendSmsRequest([
-            "phoneNumbers" => $args['phone'],
-            "signName" => $args['sign_name'],
-            "templateCode" => $args['template_code'],
-            "templateParam" => $args['template_param'],
-        ]);
         try {
-            $res = $client->sendSmsWithOptions($sendSmsRequest, new RuntimeOptions([]));
+            if($args['driver']->id==1){
+                $client = self::createClient($args['key_id'], $args['key_secret']);
+                $sendSmsRequest = new SendSmsRequest([
+                    "phoneNumbers" => $args['phone'],
+                    "signName" => $args['sign_name'],
+                    "templateCode" => $args['template_code'],
+                    "templateParam" => $args['template_param'],
+                ]);
+                $res = $client->sendSmsWithOptions($sendSmsRequest, new RuntimeOptions([]));
+            }else{
+                $res_str = '目前只支持阿里云';
+                if($throw){
+                    throw new ApiException(['code'=>2,'msg'=> $res_str]);
+                }else{
+                    return Sms::where('id',$args['id'])->update(['res'=>$res_str,'status'=>2]);
+                }
+            }
         }catch (\Exception $error) {
             $res_str = $error->getMessage();
             if($throw){
                 throw new ApiException(['code'=>2,'msg'=> $res_str]);
             }else{
-                return Sms::where('id',$args['id'])->update(['res'=>$res_str,'status'=>1]);
+                return Sms::where('id',$args['id'])->update(['res'=>$res_str,'status'=>2]);
             }
         }
         if($throw) {

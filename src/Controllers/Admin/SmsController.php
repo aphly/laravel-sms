@@ -76,6 +76,7 @@ class SmsController extends Controller
             ]);
             $arr['phone'] = $input['phone'];
             $templateInfo = SmsTemplate::where('status',1)->where('id',$input['template_id'])->with('driver')->firstOrError();
+            $arr['driver'] = $templateInfo->driver;
             $arr['key_id'] = $templateInfo->driver->key_id;
             $arr['key_secret'] = $templateInfo->driver->key_secret;
             $arr['sign_name'] = $templateInfo->sign_name;
@@ -99,13 +100,13 @@ class SmsController extends Controller
     public function test(Request $request)
     {
         $input = $request->all();
-        Verifier::handle($input,[
-            'site_id'=>'required',
-            'phone'=>'required',
-            'sms_code'=>'required'
-        ]);
         $res['smsSite'] = SmsSite::where('id',$input['site_id'])->with(['template'=>['driver']])->firstOrError();
         if($request->isMethod('post')) {
+            Verifier::handle($input,[
+                'site_id'=>'required',
+                'phone'=>'required',
+                'sms_code'=>'required'
+            ]);
             $input['site_id'] = $res['smsSite']->id;
             $input['expire_at'] = time()+$res['smsSite']->expire*60;
             $input['type'] = $res['smsSite']->type?1:0;
@@ -114,8 +115,9 @@ class SmsController extends Controller
             if($sms->id){
                 $sms->send([
                     'id'=>$sms->id,
-                    'key_id'=>$res['smsSite']->template->driver->key_id,
-                    'key_secret'=>$res['smsSite']->template->driver->key_secret,
+                    'driver' => $res['smsSite']->template->driver,
+                    'key_id' => $res['smsSite']->template->driver->key_id,
+                    'key_secret' => $res['smsSite']->template->driver->key_secret,
                     'phone'=> $sms->phone,
                     'template_param'=>'{"code":"'.$sms->sms_code.'"}',
                     'sign_name'=>$res['smsSite']->template->sign_name,

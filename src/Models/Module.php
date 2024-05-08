@@ -36,6 +36,7 @@ class Module extends Module_base
             $data=[];
             $data[] =['dict_id' => $dict->id,'name'=>'未发送','value'=>'0'];
             $data[] =['dict_id' => $dict->id,'name'=>'已发送','value'=>'1'];
+            $data[] =['dict_id' => $dict->id,'name'=>'异常','value'=>'2'];
             DB::table('admin_dict_value')->insert($data);
         }
 
