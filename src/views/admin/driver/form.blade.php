@@ -21,6 +21,17 @@
                 <input type="text" name="key_secret" class="form-control " value="{{$res['info']->key_secret}}">
                 <div class="invalid-feedback"></div>
             </div>
+
+            <div class="form-group">
+                <label for="">sdk_app_id(腾讯云特有)</label>
+                <input type="text" name="sdk_app_id" class="form-control " value="{{$res['info']->sdk_app_id}}">
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="form-group">
+                <label for="">sdk_app_key(腾讯云特有)</label>
+                <input type="text" name="sdk_app_key" class="form-control " value="{{$res['info']->sdk_app_key}}">
+                <div class="invalid-feedback"></div>
+            </div>
             <div class="form-group">
                 <label for="">状态</label>
                 <select name="status"  class="form-control">

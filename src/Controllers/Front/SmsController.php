@@ -26,13 +26,14 @@ class SmsController extends Controller
             $input['queue_priority'] = ($input['queue_priority']??0)?1:0;
             $sms = Sms::create($input);
             if($sms->id){
+                $template_param = $sms->driverSmscode($smsDriver,$sms->sms_code);
                 $sms->send([
                     'id'=>$sms->id,
                     'driver'=>$smsDriver,
                     'key_id'=>$smsDriver->key_id,
                     'key_secret'=>$smsDriver->key_secret,
                     'phone'=> $sms->phone,
-                    'template_param'=>'{"code":"'.$sms->sms_code.'"}',
+                    'template_param'=>$template_param,
                     'sign_name'=>$smsTemplate->sign_name,
                     'template_code'=>$smsTemplate->template_code,
                     'type'=>$smsSite->type,

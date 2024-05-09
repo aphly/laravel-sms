@@ -10,7 +10,7 @@ class SmsDriver extends Model
     use HasFactory;
     protected $table = 'sms_driver';
     protected $fillable = [
-        'name','key_id','key_secret','status',
+        'name','key_id','key_secret','status','sdk_app_id','sdk_app_key'
     ];
 
     function template()

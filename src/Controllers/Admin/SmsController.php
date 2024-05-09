@@ -81,7 +81,7 @@ class SmsController extends Controller
             $arr['key_secret'] = $templateInfo->driver->key_secret;
             $arr['sign_name'] = $templateInfo->sign_name;
             $arr['template_code'] = $templateInfo->template_code;
-            $arr['template_param'] = '{"code":"'.$input['sms_code'].'"}';
+            $arr['template_param'] = (New Sms)->driverSmscode($templateInfo->driver,$input['sms_code']);
             if($arr['key_id'] && $arr['key_secret'] && $arr['phone'] && $arr['sign_name'] && $arr['template_code'] && $arr['template_param']){
                 Sms::main($arr,true);
             }else{
@@ -113,13 +113,14 @@ class SmsController extends Controller
             $input['queue_priority'] = ($input['queue_priority']??0)?1:0;
             $sms = Sms::create($input);
             if($sms->id){
+                $template_param = $sms->driverSmscode($res['smsSite']->template->driver,$sms->sms_code);
                 $sms->send([
                     'id'=>$sms->id,
                     'driver' => $res['smsSite']->template->driver,
                     'key_id' => $res['smsSite']->template->driver->key_id,
                     'key_secret' => $res['smsSite']->template->driver->key_secret,
                     'phone'=> $sms->phone,
-                    'template_param'=>'{"code":"'.$sms->sms_code.'"}',
+                    'template_param'=>$template_param,
                     'sign_name'=>$res['smsSite']->template->sign_name,
                     'template_code'=>$res['smsSite']->template->template_code,
                     'type'=>$res['smsSite']->type,

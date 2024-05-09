@@ -9,6 +9,7 @@ laravel10+<br>
 
 安装<br>
 `composer require alibabacloud/dysmsapi-20170525` <br>
+`composer require tencentcloud/tencentcloud-sdk-php` <br>
 `composer require aphly/laravel-sms` <br>
 `php artisan vendor:publish --provider="Aphly\LaravelSms\SmsServiceProvider"` <br>
 
