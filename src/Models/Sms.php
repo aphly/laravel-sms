@@ -10,7 +10,6 @@ use Aphly\LaravelSms\Jobs\SmsJob;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class Sms extends Model
 {
@@ -56,56 +55,71 @@ class Sms extends Model
         if($driver->id==1){
             return'{"code":"'.$sms_code.'"}';
         }else{
-            return $sms_code;
+            return (string)$sms_code;
         }
     }
 
     public static function main($args,$throw=false){
-        try {
-            if($args['driver']->id==1) {
-                $res = Aliyun::send($args);
-            }else if($args['driver']->id==2){
-                $res = Tencent::send($args);
-            }else{
-                $res_str = '目前只支持阿里、腾讯';
-                if($throw){
-                    throw new ApiException(['code'=>2,'msg'=> $res_str]);
+        if($throw) {
+            try {
+                if ($args['driver']->id == 1) {
+                    $res = Aliyun::send($args);
+                } else if ($args['driver']->id == 2) {
+                    $res = Tencent::send($args);
+                } else {
+                    $res_str = '目前只支持阿里、腾讯';
+                    throw new ApiException(['code' => 2, 'msg' => $res_str]);
+                }
+            } catch (\Exception $error) {
+                $res_str = $error->getMessage();
+                throw new ApiException(['code' => 2, 'msg' => $res_str]);
+            }
+            if ($args['driver']->id == 1) {
+                if ($res->body->code == 'OK') {
+                    throw new ApiException(['code' => 0, 'msg' => $res->body->message, 'data' => $res->body]);
+                } else {
+                    throw new ApiException(['code' => 1, 'msg' => $res->body->message, 'data' => $res->body]);
+                }
+            } else if ($args['driver']->id == 2) {
+                $res_arr = json_decode($res, true);
+                if ($res_arr['SendStatusSet'][0]['Code'] == 'Ok') {
+                    throw new ApiException(['code' => 0, 'msg' => $res_arr['SendStatusSet'][0]['Code'], 'data' => $res_arr]);
+                } else {
+                    throw new ApiException(['code' => 1, 'msg' => $res_arr['SendStatusSet'][0]['Code'], 'data' => $res_arr]);
+                }
+            }
+        }else{
+            try {
+                if($args['driver']->id==1) {
+                    $res = Aliyun::send($args);
+                }else if($args['driver']->id==2){
+                    $res = Tencent::send($args);
                 }else{
+                    $res_str = '目前只支持阿里、腾讯';
                     return Sms::where('id',$args['id'])->update(['res'=>$res_str,'status'=>2]);
                 }
+            }catch (\Exception $error) {
+                $res_str = $error->getMessage();
+                return Sms::where('id',$args['id'])->update(['res'=>'Exception: '.$res_str,'status'=>2]);
             }
-        }catch (\Exception $error) {
-            $res_str = $error->getMessage();
-            if($throw){
-                throw new ApiException(['code'=>2,'msg'=> $res_str]);
-            }else{
-                return Sms::where('id',$args['id'])->update(['res'=>$res_str,'status'=>2]);
-            }
-        }
-        if($args['driver']->id==1) {
-            if($throw) {
-                if($res->body->code=='ok'){
-                    throw new ApiException(['code' => 0, 'msg' => $res->body->message, 'data' => $res->body]);
-                }else{
-                    throw new ApiException(['code'=>1,'msg'=>$res->body->message,'data'=>$res->body]);
+            if($args['driver']->id==1) {
+                if ($res->body->code == 'OK') {
+                    return Sms::where('id',$args['id'])->update(['res'=>json_encode($res->body),'status'=>1]);
+                } else {
+                    return Sms::where('id',$args['id'])->update(['res'=>json_encode($res->body),'status'=>2]);
                 }
-            }else{
-                return Sms::where('id',$args['id'])->update(['res'=>json_encode($res->body),'status'=>1]);
-            }
-        }else if($args['driver']->id==2){
-            if($throw) {
-                $res_arr = json_decode($res,true);
-                if($res_arr['SendStatusSet'][0]['Code']=='Ok'){
-                    throw new ApiException(['code' => 0, 'msg' => $res_arr['SendStatusSet'][0]['Code'], 'data' => $res_arr]);
+            }else if($args['driver']->id==2){
+                $res_arr = json_decode($res, true);
+                if ($res_arr['SendStatusSet'][0]['Code'] == 'Ok') {
+                    return Sms::where('id',$args['id'])->update(['res'=>$res,'status'=>1]);
                 }else{
-                    throw new ApiException(['code'=>1,'msg'=>$res_arr['SendStatusSet'][0]['Code'],'data'=>$res_arr]);
+                    return Sms::where('id',$args['id'])->update(['res'=>$res,'status'=>2]);
                 }
-            }else{
-                return Sms::where('id',$args['id'])->update(['res'=>$res,'status'=>1]);
             }
         }
 
     }
+
 
 
 }
