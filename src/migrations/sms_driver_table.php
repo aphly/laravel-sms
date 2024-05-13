@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('sms_driver', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('type')->default(1);
             $table->string('name',16);
             $table->string('key_id',255);
             $table->string('key_secret',255);

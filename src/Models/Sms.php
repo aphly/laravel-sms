@@ -53,7 +53,7 @@ class Sms extends Model
 
     function driverSmscode($driver,$sms_code)
     {
-        if($driver->id==1){
+        if($driver->type==1){
             return'{"code":"'.$sms_code.'"}';
         }else{
             return (string)$sms_code;
@@ -63,9 +63,9 @@ class Sms extends Model
     public static function main($args,$throw=false){
         if($throw) {
             try {
-                if ($args['driver']->id == 1) {
+                if ($args['driver']->type == 1) {
                     $res = Aliyun::send($args);
-                } else if ($args['driver']->id == 2) {
+                } else if ($args['driver']->type == 2) {
                     $res = Tencent::send($args);
                 } else {
                     $res_str = '目前只支持阿里、腾讯';
@@ -75,13 +75,13 @@ class Sms extends Model
                 $res_str = $error->getMessage();
                 throw new ApiException(['code' => 2, 'msg' => $res_str]);
             }
-            if ($args['driver']->id == 1) {
+            if ($args['driver']->type == 1) {
                 if ($res->body->code == 'OK') {
                     throw new ApiException(['code' => 0, 'msg' => $res->body->message, 'data' => $res->body]);
                 } else {
                     throw new ApiException(['code' => 1, 'msg' => $res->body->message, 'data' => $res->body]);
                 }
-            } else if ($args['driver']->id == 2) {
+            } else if ($args['driver']->type == 2) {
                 $res_arr = json_decode($res, true);
                 if ($res_arr['SendStatusSet'][0]['Code'] == 'Ok') {
                     throw new ApiException(['code' => 0, 'msg' => $res_arr['SendStatusSet'][0]['Code'], 'data' => $res_arr]);
@@ -91,9 +91,9 @@ class Sms extends Model
             }
         }else{
             try {
-                if($args['driver']->id==1) {
+                if($args['driver']->type==1) {
                     $res = Aliyun::send($args);
-                }else if($args['driver']->id==2){
+                }else if($args['driver']->type==2){
                     $res = Tencent::send($args);
                 }else{
                     $res_str = '目前只支持阿里、腾讯';
@@ -103,14 +103,14 @@ class Sms extends Model
                 $res_str = $error->getMessage();
                 return Sms::where('id',$args['id'])->update(['res'=>'Exception: '.$res_str,'status'=>2]);
             }
-            if($args['driver']->id==1) {
+            if($args['driver']->type==1) {
                 if ($res->body->code == 'OK') {
                     SmsSite::where('id',$args['smsSite_id'])->increment('used_num');
                     return Sms::where('id',$args['id'])->update(['res'=>json_encode($res->body),'status'=>1]);
                 } else {
                     return Sms::where('id',$args['id'])->update(['res'=>json_encode($res->body),'status'=>2]);
                 }
-            }else if($args['driver']->id==2){
+            }else if($args['driver']->type==2){
                 $res_arr = json_decode($res, true);
                 if ($res_arr['SendStatusSet'][0]['Code'] == 'Ok') {
                     SmsSite::where('id',$args['smsSite_id'])->increment('used_num');

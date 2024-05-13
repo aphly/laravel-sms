@@ -29,7 +29,7 @@
                         <li><input type="checkbox" class="delete_box" name="delete[]" value="{{$v['id']}}">{{$v['id']}}</li>
                         <li>{{ $v['sign_name'] }}</li>
                         <li>{{ $v['template_code'] }}</li>
-                        <li>{{ $v->driver->name }}</li>
+                        <li>{{$dict['driver_type'][$v->driver->type]}} {{ $v->driver->name }}</li>
                         <li>
                             @if($dict['status'])
                                 @if($v['status']==1)

@@ -20,7 +20,7 @@
                 <label for="">通道</label>
                 <select name="driver_id"  class="form-control">
                     @foreach($res['driver'] as $key=>$val)
-                        <option value="{{$val->id}}" @if($res['info']->driver_id==$val->id) selected @endif>{{$val->name}}</option>
+                        <option value="{{$val->id}}" @if($res['info']->driver_id==$val->id) selected @endif>{{$dict['driver_type'][$val->type]}} {{$val->name}}</option>
                     @endforeach
                 </select>
                 <div class="invalid-feedback"></div>

@@ -31,6 +31,14 @@ class Module extends Module_base
         }
         DB::table('admin_role_menu')->insert($data);
 
+        $dict = Dict::create(['name' => '驱动类型','uuid'=>$manager->uuid,'key'=>'driver_type','module_id'=>$module_id]);
+        if($dict->id){
+            $data=[];
+            $data[] =['dict_id' => $dict->id,'name'=>'阿里云','value'=>'1'];
+            $data[] =['dict_id' => $dict->id,'name'=>'腾讯云','value'=>'2'];
+            DB::table('admin_dict_value')->insert($data);
+        }
+
         $dict = Dict::create(['name' => 'SMS状态','uuid'=>$manager->uuid,'key'=>'sms_status','module_id'=>$module_id]);
         if($dict->id){
             $data=[];

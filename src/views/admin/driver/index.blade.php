@@ -23,6 +23,7 @@
             <div class="table">
                 <ul class="table_header">
                     <li >ID</li>
+                    <li >类型</li>
                     <li >名称</li>
                     <li >key_id</li>
                     <li >status</li>
@@ -32,6 +33,11 @@
                     @foreach($res['list'] as $v)
                     <ul class="table_tbody">
                         <li><input type="checkbox" class="delete_box" name="delete[]" value="{{$v['id']}}">{{$v['id']}}</li>
+                        <li>
+                            @if($dict['driver_type'])
+                                {{$dict['driver_type'][$v['type']]}}
+                            @endif
+                        </li>
                         <li>{{ $v['name'] }}</li>
                         <li>{{ $v['key_id'] }}</li>
                         <li>

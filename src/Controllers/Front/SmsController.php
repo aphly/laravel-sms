@@ -18,7 +18,6 @@ class SmsController extends Controller
     {
         if($request->isMethod('post')) {
             list($input,$smsSite,$smsTemplate,$smsDriver) = $this->_check($request);
-
             $now = time();
             $input['site_id'] = $smsSite->id;
             $input['expire_at'] = $now+$smsSite->expire*60;

@@ -27,7 +27,7 @@
                 <label for="">签名 - 模板Code</label>
                 <select name="template_id"  class="form-control">
                     @foreach($res['template'] as $key=>$val)
-                    <optgroup label="{{$res['driver'][$key]['name']}}">
+                    <optgroup label="{{$dict['driver_type'][$res['driver'][$key]['type']]}} {{$res['driver'][$key]['name']}}">
                     @foreach($val as $k=>$v)
                         <option value="{{$v->id}}" @if($res['info']->template_id==$v->id) selected @endif>{{$v->sign_name}} - {{$v->template_code}}</option>
                     @endforeach

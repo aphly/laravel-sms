@@ -7,6 +7,18 @@
         @csrf
         <div class="">
             <div class="form-group">
+                <label for="">类型</label>
+                <select name="type"  class="form-control">
+                    @if(isset($dict['driver_type']))
+                        @foreach($dict['driver_type'] as $key=>$val)
+                            <option value="{{$key}}" @if($res['info']->type==$key) selected @endif>{{$val}}</option>
+                        @endforeach
+                    @endif
+                </select>
+                <div class="invalid-feedback"></div>
+            </div>
+
+            <div class="form-group">
                 <label for="">名称</label>
                 <input type="text" name="name" class="form-control " value="{{$res['info']->name}}">
                 <div class="invalid-feedback"></div>
