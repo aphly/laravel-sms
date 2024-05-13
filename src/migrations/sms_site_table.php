@@ -23,6 +23,8 @@ return new class extends Migration
             $table->unsignedTinyInteger('ip_limit')->default(20);
             $table->unsignedTinyInteger('phone_limit')->default(10);
             $table->unsignedTinyInteger('expire')->default(2);
+            $table->unsignedBigInteger('total_num');
+            $table->unsignedBigInteger('used_num');
             $table->tinyInteger('status')->default(0);
             $table->unsignedBigInteger('created_at');
             $table->unsignedBigInteger('updated_at');

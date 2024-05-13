@@ -63,6 +63,16 @@
                 <div class="invalid-feedback"></div>
             </div>
             <div class="form-group">
+                <label for="">总条数</label>
+                <input type="text" name="total_num" class="form-control " value="{{$res['info']->total_num?:0}}">
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="form-group">
+                <label for="">已发条数</label>
+                <input type="text" name="used_num" class="form-control " value="{{$res['info']->used_num?:0}}">
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="form-group">
                 <label for="">状态</label>
                 <select name="status"  class="form-control">
                     @if(isset($dict['status']))

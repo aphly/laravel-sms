@@ -25,6 +25,8 @@
                     <li >ID</li>
                     <li >Appid</li>
                     <li >Host</li>
+                    <li >总条数</li>
+                    <li >已发条数</li>
                     <li >status</li>
                     <li >操作</li>
                 </ul>
@@ -34,6 +36,8 @@
                         <li><input type="checkbox" class="delete_box" name="delete[]" value="{{$v['id']}}">{{$v['id']}}</li>
                         <li>{{ $v['app_id'] }}</li>
                         <li>{{ $v['host'] }}</li>
+                        <li>{{ $v['total_num'] }}</li>
+                        <li>{{ $v['used_num'] }}</li>
                         <li>
                             @if($dict['status'])
                                 @if($v['status']==1)

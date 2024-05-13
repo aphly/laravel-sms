@@ -18,6 +18,7 @@ class SmsController extends Controller
     {
         if($request->isMethod('post')) {
             list($input,$smsSite,$smsTemplate,$smsDriver) = $this->_check($request);
+
             $now = time();
             $input['site_id'] = $smsSite->id;
             $input['expire_at'] = $now+$smsSite->expire*60;
@@ -30,6 +31,7 @@ class SmsController extends Controller
                 $sms->send([
                     'id'=>$sms->id,
                     'driver'=>$smsDriver,
+                    'smsSite_id'=>$smsSite->id,
                     'key_id'=>$smsDriver->key_id,
                     'key_secret'=>$smsDriver->key_secret,
                     'phone'=> $sms->phone,
@@ -70,6 +72,11 @@ class SmsController extends Controller
         $smsTemplate = SmsTemplate::where('id',$smsSite->template_id)->statusOrError();
         $smsDriver = SmsDriver::where('id',$smsTemplate->driver_id)->statusOrError();
         if(!$is_check){
+            if($smsSite->total_num!==0){
+                if($smsSite->total_num<=$smsSite->used_num){
+                    throw new ApiException(['code'=>7,'msg'=>'请联系管理员']);
+                }
+            }
             SmsIpLog::ipLimit($smsSite->ip_limit);
             SmsPhoneLog::phoneLimit($input['phone'],$smsSite->phone_limit);
         }

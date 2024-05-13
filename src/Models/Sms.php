@@ -10,6 +10,7 @@ use Aphly\LaravelSms\Jobs\SmsJob;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class Sms extends Model
 {
@@ -104,6 +105,7 @@ class Sms extends Model
             }
             if($args['driver']->id==1) {
                 if ($res->body->code == 'OK') {
+                    SmsSite::where('id',$args['smsSite_id'])->increment('used_num');
                     return Sms::where('id',$args['id'])->update(['res'=>json_encode($res->body),'status'=>1]);
                 } else {
                     return Sms::where('id',$args['id'])->update(['res'=>json_encode($res->body),'status'=>2]);
@@ -111,6 +113,7 @@ class Sms extends Model
             }else if($args['driver']->id==2){
                 $res_arr = json_decode($res, true);
                 if ($res_arr['SendStatusSet'][0]['Code'] == 'Ok') {
+                    SmsSite::where('id',$args['smsSite_id'])->increment('used_num');
                     return Sms::where('id',$args['id'])->update(['res'=>$res,'status'=>1]);
                 }else{
                     return Sms::where('id',$args['id'])->update(['res'=>$res,'status'=>2]);
